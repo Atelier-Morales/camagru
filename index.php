@@ -16,19 +16,17 @@ if(isset($_POST['submit'])){
     if($password == '')
         $errMsg .= 'You must enter your Password<br>';
 
-
     if($errMsg == ''){
-        $sql = 'SELECT id, username, password FROM user WHERE username = :username';
+        $sql = 'SELECT id, username, email, password FROM user WHERE username = :username OR email = :email';
         $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $records->execute(array(':username' => $username));
+        $records->execute(array(':username' => $username, ':email' => $username));
         $results = $records->fetchAll();
-        if ($password != 'test')
-            $hashPass = hash('gost', $password);
-        else
-            $hashPass = $password;
+        $hashPass = hash('gost', $password);
         if(count($results[0]) > 0 && strcmp($hashPass, $results[0]['password']) == 0) {
+            $username = $results[0]['username'];
             $login = true;
         } else {
+            unset($username);
             $errMsg .= 'Username and Password not found<br>';
         }
     }
@@ -49,38 +47,70 @@ if(isset($_POST['submitReg'])){
         $errMsg .= 'You must enter your Email<br>';
 
     if($errMsg == '') {
-        try {
-            $pass = hash('gost', $password);
-            $sql = $db->prepare("INSERT INTO user (username, password, email) VALUES (:username, :password, :email)");
-            $sql->bindParam(':username', $username, PDO::PARAM_STR);
-            $sql->bindParam(':password', $pass, PDO::PARAM_STR);
-            $sql->bindParam(':email', $email, PDO::PARAM_STR);
-            $sql->execute();
-            $_SESSION['username'] = $username;
-            $login = true;
-        } catch(PDOException $e) {
-            echo $e->getMessage();
-        }
+        $pass = hash('gost', $password);
+        $codedInfo = base64_encode($username . ' ' . $email . ' ' . $pass);
+        $headers = "From: test@mydomain.com";
+        $msg = "Hello " . $username . "\r\n" .
+            "In order to complete your registration, please validate your account via this link :"
+            . "\r\n" .
+            "http://localhost:8080/index.php?token=" . $codedInfo;
+        mail($email,"Camagru : Validate your account",$msg, $headers);
+        unset($username);
+        $confirm = true;
+    }
+}
+
+if (isset($_GET["token"])) {
+    $decoded = base64_decode(htmlspecialchars($_GET["token"]));
+    $token = explode(" ", $decoded);
+    try {
+        $sql = $db->prepare("INSERT INTO user (username, password, email) VALUES (:username, :password, :email)");
+        $sql->bindParam(':username', $token[0], PDO::PARAM_STR);
+        $sql->bindParam(':password', $token[2], PDO::PARAM_STR);
+        $sql->bindParam(':email', $token[1], PDO::PARAM_STR);
+        $sql->execute();
+        $_SESSION['username'] = $token[0];
+        $username = $token[0];
+        $login = true;
+        $welcome = true;
+    } catch(PDOException $e) {
+        echo $e->getMessage();
     }
 }
 
 if (isset($_GET["logout"])) {
     $login = false;
+    unset($username);
     header("Location: index.php");
 }
 
 require("header.php");
 
 if (!isset($login) || $login == false) {
-    echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
     if (isset($_GET["register"])) {
-        require("register.php");
+        if (isset($confirm) && $confirm == true) {
+            echo '<h2 class="welcome">Please click on the link you have received by email</h2>';
+        }
+        else {
+            echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
+            require("register.php");
+        }
     }
-    else
+    else {
+        echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
         require("login.php");
+    }
 }
-else
+else {
     require("welcome.php");
+    if (isset($welcome) && $welcome == true) {
+        $message = "welcome to camagru, ". $username;
+        echo '<script type="text/javascript">'
+        , 'window.alert("' . $message . '");'
+        , '</script>'
+        ;
+    }
+}
 
 echo '<br>';
 
