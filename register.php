@@ -13,7 +13,7 @@
                 <input type="text" name="username" class="box" />
                 <br />
                 <br />
-                <label>Email Address:</label>
+                <label>Email :</label>
                 <input type="email" name="email" class="box" />
                 <br />
                 <br />
