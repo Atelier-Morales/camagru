@@ -53,7 +53,10 @@ if(isset($_POST['submitReg'])){
         $msg = "Hello " . $username . "\r\n" .
             "In order to complete your registration, please validate your account via this link :"
             . "\r\n" .
-            "http://localhost:8080/index.php?token=" . $codedInfo;
+            "http://localhost:8080/index.php?token=" . $codedInfo
+            . "\r\n" .
+            "Thank you," . "\r\n" .
+            "The Camagru Team";
         mail($email,"Camagru : Validate your account",$msg, $headers);
         unset($username);
         $confirm = true;
