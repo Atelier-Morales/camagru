@@ -16,7 +16,7 @@
 <div class="camera">
     <video id="video">Video stream not available.</video>
     <br>
-    <button id="startbutton">Take photo</button>
+    <button id="startbutton">Take a photo</button>
 </div>
 
 <br>

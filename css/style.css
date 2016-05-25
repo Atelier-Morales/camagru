@@ -46,6 +46,10 @@
     transition: all .25s ease-in-out;
 }
 
+.footer, .push {
+    height: 4em;
+}
+
 .footer {
     background-color: #292c2f;
     text-align: center;
