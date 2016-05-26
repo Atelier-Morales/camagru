@@ -18,7 +18,7 @@ function base64_to_jpeg($base64_string, $output_file) {
 
 $data = json_decode(file_get_contents('php://input'), true);
 $pictureName = $data["url"];
-error_log($pictureName);
-base64_to_jpeg($pictureName, 'faces/test1.jpg');
 
+base64_to_jpeg($pictureName, 'temp/preview.jpg');
+echo('temp/preview.jpg');
 ?>

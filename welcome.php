@@ -21,16 +21,21 @@
     <video id="video">Video stream not available.</video>
     <br>
     <button id="startbutton">Take a photo</button>
+
+    <br><br><br>
+
+    <p>Preview :</p>
+    <img width="320" height="240" id="photo2" src=""/>
 </div>
 
-<br>
 
 <canvas id="canvas">
 </canvas>
 
 <img width="320" height="240" id="photo" src=""/>
+<div>
 
-<img width="320" height="240" id="photo2" src=""/>
+
 
 
 <script type="text/javascript" src="js/script.js"></script>

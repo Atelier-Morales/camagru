@@ -17,12 +17,15 @@
     var video = null;
     var canvas = null;
     var photo = null;
+    var photo2 = null;
     var startbutton = null;
+    var face = null;
 
     function startup() {
         video = document.getElementById('video');
         canvas = document.getElementById('canvas');
         photo = document.getElementById('photo');
+        photo2 = document.getElementById('photo2');
         startbutton = document.getElementById('startbutton');
 
         navigator.getMedia = ( navigator.getUserMedia ||
@@ -69,8 +72,16 @@
         }, false);
 
         startbutton.addEventListener('click', function(ev){
-            takepicture();
-            ev.preventDefault();
+            for (var i = 1; i <= 6; i++) {
+                if (document.getElementById('markStudent' + i).checked === true) {
+                    face = i;
+                    takepicture();
+                    ev.preventDefault();
+                    break ;
+                }
+            }
+            if (i === 7)
+                alert('please choose a face');
         }, false);
 
         clearphoto();
@@ -106,10 +117,10 @@
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
             xmlhttp.open("POST", "../ajax.php");
             xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xmlhttp.send(JSON.stringify({url: data}));
+            xmlhttp.send(JSON.stringify({url: data, face : face}));
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    console.log('testLOL4');
+                    photo2.src = 'http://localhost:8080/' + xmlhttp.responseText + '?' + new Date().getTime();
                 }
             };
         } else {
