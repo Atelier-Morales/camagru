@@ -116,11 +116,6 @@
             clearphoto();
         }
     }
-
-    function loadImg(value) {
-        console.log('testLOL');
-        document.getElementById('photo2').setAttribute(src, value);
-    }
     // Set up our event listener to run the startup process
     // once loading is complete.
     window.addEventListener('load', startup, false);
