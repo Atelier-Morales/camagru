@@ -87,6 +87,8 @@ if (isset($_GET["logout"])) {
     header("Location: index.php");
 }
 
+require("ajax.php");
+
 require("header.php");
 
 if (!isset($login) || $login == false) {

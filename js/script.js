@@ -85,7 +85,7 @@
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         var data = canvas.toDataURL('image/png');
-        //photo.setAttribute('src', data);
+        photo.setAttribute('src', data);
     }
 
     // Capture a photo by fetching the current contents of the video
@@ -102,12 +102,25 @@
             context.drawImage(video, 0, 0, width, height);
 
             var data = canvas.toDataURL('image/png');
-            //photo.setAttribute('src', data);
+            photo.setAttribute('src', data);
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+            xmlhttp.open("POST", "../ajax.php");
+            xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xmlhttp.send(JSON.stringify({url: data}));
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    console.log('testLOL4');
+                }
+            };
         } else {
             clearphoto();
         }
     }
 
+    function loadImg(value) {
+        console.log('testLOL');
+        document.getElementById('photo2').setAttribute(src, value);
+    }
     // Set up our event listener to run the startup process
     // once loading is complete.
     window.addEventListener('load', startup, false);
