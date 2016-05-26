@@ -17,8 +17,32 @@ function base64_to_jpeg($base64_string, $output_file) {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-$pictureName = $data["url"];
+if (isset($data["url"])) {
+    $face = $data["face"];
+    $pictureName = $data["url"];
+    $facePicture = 'faces/' . $face . '.png';
+    base64_to_jpeg($pictureName, 'temp/preview.png');
 
-base64_to_jpeg($pictureName, 'temp/preview.jpg');
-echo('temp/preview.jpg');
+    $dest = imagecreatefrompng("temp/preview.png");
+    $src = imagecreatefrompng($facePicture);
+
+//    imagealphablending($image_1, true);
+//    imagesavealpha($image_1, true);
+//    imagecopy($image_1, $image_2, 0, 0, 0, 0, 100, 100);
+//    imagepng($image_1, 'image_3.png')
+
+    imagealphablending($dest, true);
+    imagesavealpha($dest, true);
+
+    imagecopy($dest, $src, 100, 0, 0, 0, 100, 142); //have to play with these numbers for it to work for you, etc.
+
+    header('Content-Type: image/png');
+    imagepng($dest, 'temp/blend.png');
+
+    imagedestroy($dest);
+    imagedestroy($src);
+
+    echo('temp/blend.png');
+}
+
 ?>

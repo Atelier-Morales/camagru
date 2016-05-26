@@ -4,7 +4,7 @@
    <?php
         for ($i = 1; $i <= 6; $i++) {
             echo '<div class="wrap">
-            <img width="100px" src="faces/'.$i.'.png"/>
+            <img src="faces/'.$i.'.png"/>
             <input type="radio" name="mark" id="markStudent'.$i.'" value="Student" />
             </div>';
         }
