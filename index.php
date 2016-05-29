@@ -25,6 +25,7 @@ if(isset($_POST['submit'])){
         if(count($results[0]) > 0 && strcmp($hashPass, $results[0]['password']) == 0) {
             $username = $results[0]['username'];
             $login = true;
+            $_SESSION['username'] = $username;
         } else {
             unset($username);
             $errMsg .= 'Username and Password not found<br>';
@@ -84,6 +85,7 @@ if (isset($_GET["token"])) {
 if (isset($_GET["logout"])) {
     $login = false;
     unset($username);
+    unset($_SESSION['username']);
     header("Location: index.php");
 }
 
@@ -107,6 +109,10 @@ if (!isset($login) || $login == false) {
     }
 }
 else {
+    $sql = 'SELECT src, title, date FROM pictures pic INNER JOIN user us ON pic.user_id = us.id WHERE us.username = :username';
+    $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $records->execute(array(':username' => $username));
+    $pics = $records->fetchAll();
     require("welcome.php");
     if (isset($welcome) && $welcome == true) {
         $message = "welcome to camagru, ". $username;

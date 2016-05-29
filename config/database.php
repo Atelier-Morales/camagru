@@ -5,6 +5,8 @@ $DB_USER = 'root';
 $DB_PASSWORD = 'fernan';
 try {
     $db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $ex) {
     echo "An Error occured! : ".$ex->getMessage();
 }

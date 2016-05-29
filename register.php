@@ -1,3 +1,9 @@
+<?php
+if (!isset($username) || $login == false) {
+    header("Location: index.php");
+}
+?>
+
 <div align="center">
     <br />
     <div style="width:300px; border: solid 1px #006D9C; " align="left">

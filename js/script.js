@@ -27,6 +27,7 @@
         photo = document.getElementById('photo');
         photo2 = document.getElementById('photo2');
         startbutton = document.getElementById('startbutton');
+        savebutton = document.getElementById('savebutton');
 
         navigator.getMedia = ( navigator.getUserMedia ||
                               navigator.webkitGetUserMedia ||
@@ -84,6 +85,17 @@
                 alert('please choose a face');
         }, false);
 
+        savebutton.addEventListener('click', function(ev){
+            if (document.getElementById('photoTitle').value.length < 1)
+                alert('please choose a title');
+            else {
+                if (photo2.src == "http://localhost:8080/index.php")
+                    alert('please take a picture');
+                savepicture();
+            }
+
+        }, false);
+
         clearphoto();
     }
 
@@ -94,7 +106,6 @@
         var context = canvas.getContext('2d');
         context.fillStyle = "#AAA";
         context.fillRect(0, 0, canvas.width, canvas.height);
-
         var data = canvas.toDataURL('image/png');
         photo.setAttribute('src', data);
     }
@@ -104,6 +115,21 @@
     // format data URL. By drawing it on an offscreen canvas and then
     // drawing that to the screen, we can change its size and/or apply
     // other changes before drawing it.
+
+    function savepicture() {
+        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+        xmlhttp.open("POST", "../ajax.php");
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        var start = Date.now();
+        var title = document.getElementById('photoTitle').value;
+        xmlhttp.send(JSON.stringify({title: title, date : start}));
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                // photo2.src = 'http://localhost:8080/' + xmlhttp.responseText + '?' + new Date().getTime();
+                console.log(xmlhttp.responseText )
+            }
+        };
+    }
 
     function takepicture() {
         var context = canvas.getContext('2d');
