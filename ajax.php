@@ -18,9 +18,28 @@ function base64_to_jpeg($base64_string, $output_file) {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
+require("config/database.php");
+
+if (isset($data["id_delete"])) {
+    try {
+        $sql = $db->prepare('DELETE FROM pictures WHERE id = :id AND user_id = :user_id');
+        $sql->bindParam(':id', $data["id_delete"]);
+        $sql->bindParam(':user_id' , $data["user_id"]);
+        $db->beginTransaction();
+        $sql->execute();
+        $db->commit();
+        if ($sql)
+            echo "success";
+        else
+            echo "fail";
+    }
+    catch(PDOException $ex) {
+        echo "An Error occured! : ".$ex->getMessage();
+    }
+}
 
 if (isset($data["title"])) {
-    require("config/database.php");
+
     $username = $_SESSION['username'];
     $fp = fopen('temp/blend.png', 'rb'); // read binary
     try {

@@ -13,7 +13,10 @@ if (!isset($username) || $login == false) {
     <?php
     for ($i = 0; $i <= (count($pics) - 1); $i++) {
         echo '<img width="320" height="240" id="none" src="data:image/png;base64,'.base64_encode($pics[$i]["src"]).'"/>';
-        echo '<div><p>'. $pics[$i]["title"] . ' (' . $pics[$i]["date"] . ') <button id="delete" onclick="deleteLink()">X</button></p></div>';
+        echo
+            '<div><p>'. $pics[$i]["title"] . ' (' . $pics[$i]["date"] .
+            ') <button id="delete" onclick="deleteLink(\''.$pics[$i]["id"].
+            '\',\''.$pics[$i]["user_id"].'\')">X</button></p></div>';
     }
     ?>
 </div>

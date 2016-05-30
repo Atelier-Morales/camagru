@@ -1,3 +1,19 @@
+
+function deleteLink(id, user_id) {
+    console.log(id + ' ' + user_id);
+
+    var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+    xmlhttp.open("POST", "../ajax.php");
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify({user_id: user_id, id_delete : id}));
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            console.log(xmlhttp.responseText );
+            window.location.reload();
+        }
+    };
+}
+
 (function() {
     // The width and height of the captured photo. We will set the
     // width to the value defined here, but the height will be
@@ -10,10 +26,6 @@
     // video from the camera. Obviously, we start at false.
 
     var streaming = false;
-
-    function deleteLink() {
-        console.log('deleting');
-    }
 
     // The various HTML elements we need to configure or control. These
     // will be set by the startup() function.

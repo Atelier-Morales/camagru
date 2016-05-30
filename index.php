@@ -109,7 +109,7 @@ if (!isset($login) || $login == false) {
     }
 }
 else {
-    $sql = 'SELECT src, title, date 
+    $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, pic.user_id 
     FROM pictures pic 
     INNER JOIN user us 
     ON pic.user_id = us.id 
