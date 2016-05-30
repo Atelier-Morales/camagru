@@ -11,7 +11,7 @@ if (!isset($username) || $login == false) {
     <?php
     for ($i = 0; $i <= (count($pics) - 1); $i++) {
         echo '<img width="320" height="240" id="none" src="data:image/png;base64,'.base64_encode($pics[$i]["src"]).'"/>';
-        echo '<p>'. $pics[$i]["title"] .'</p>';
+        echo '<p>'. $pics[$i]["title"] . ' (' . $pics[$i]["date"] . ')</p>';
     }
     ?>
 </div>

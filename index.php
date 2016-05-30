@@ -109,7 +109,12 @@ if (!isset($login) || $login == false) {
     }
 }
 else {
-    $sql = 'SELECT src, title, date FROM pictures pic INNER JOIN user us ON pic.user_id = us.id WHERE us.username = :username';
+    $sql = 'SELECT src, title, date 
+    FROM pictures pic 
+    INNER JOIN user us 
+    ON pic.user_id = us.id 
+    WHERE us.username = :username
+    ORDER BY pic.date DESC';
     $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $records->execute(array(':username' => $username));
     $pics = $records->fetchAll();

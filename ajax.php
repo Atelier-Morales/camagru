@@ -21,11 +21,9 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data["title"])) {
     require("config/database.php");
-    error_log($_SESSION['username']);
     $username = $_SESSION['username'];
     $fp = fopen('temp/blend.png', 'rb'); // read binary
     try {
-
         $sql = $db->prepare('INSERT INTO pictures (user_id, src, title, date) VALUES ((SELECT id FROM user WHERE username = :username), :src, :title, :date)');
         $sql->bindParam(':username', $username, PDO::PARAM_STR);
         $sql->bindParam(':src' , $fp, PDO::PARAM_LOB);
