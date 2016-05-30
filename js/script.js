@@ -37,6 +37,7 @@ function deleteLink(id, user_id) {
     var startbutton = null;
     var face = null;
     var deleteButton = null;
+    var submitFile = null
 
     function startup() {
         video = document.getElementById('video');
@@ -46,6 +47,7 @@ function deleteLink(id, user_id) {
         startbutton = document.getElementById('startbutton');
         savebutton = document.getElementById('savebutton');
         deleteButton = document.getElementById('delete');
+        submitFile = document.getElementById('submitFile');
 
         navigator.getMedia = ( navigator.getUserMedia ||
                               navigator.webkitGetUserMedia ||
@@ -108,20 +110,41 @@ function deleteLink(id, user_id) {
                 alert('please choose a title');
             else {
                 if (photo2.src == "http://localhost:8080/index.php")
-                    alert('please take a picture');
-                savepicture();
+                    alert('please take a picture or upload an image');
+                else {
+                    savepicture();
+                }
+
             }
 
         }, false);
 
-        // deleteButton.addEventListener('click', function(ev){
-        //     deleteLink();
-        // }, false);
+        submitFile.addEventListener('click', function(ev){
+            ev.preventDefault();
+            saveUploadedPhoto(ev);
+        }, false);
 
         clearphoto();
     }
 
+    function _(elementID) {
+        return document.getElementById(elementID);
+    }
 
+    function saveUploadedPhoto(ev) {
+        ev.preventDefault();
+        var file = _("fileToUpload").files[0];
+        var formData = new FormData();
+        formData.append("photo", file);
+        var ajax = new XMLHttpRequest();
+        ajax.open("POST", "upload.php"); ajax.send(formData);
+        ajax.onreadystatechange = function() {
+            if (ajax.readyState == 4 && ajax.status == 200) {
+                ev.preventDefault();
+                console.log(ajax.responseText );
+            }
+        };
+    }
     // Fill the photo with an indication that none has been
     // captured.
 

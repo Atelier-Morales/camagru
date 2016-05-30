@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 $DB_DSN = 'mysql:host=localhost:3306;dbname=test;charset=utf8';
 $DB_USER = 'root';
 $DB_PASSWORD = 'fernan';

@@ -54,6 +54,15 @@ if (!isset($username) || $login == false) {
         <input type="text" name="photoTitle" id="photoTitle" placeholder="choose a title..."/>
         <button id="savebutton">save photo</button>
     </div>
+    <br>
+    <div class="upload">
+        <form id="image_upload_form" method="post" enctype="multipart/form-data">
+            Select image to upload:
+            <input type="file" name="photo" id="fileToUpload">
+            <input type="submit" value="Upload Image" id="submitFile" name="submitFile">
+        </form>
+    </div>
+
 
     <canvas id="canvas">
     </canvas>

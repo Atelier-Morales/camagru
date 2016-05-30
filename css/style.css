@@ -128,7 +128,7 @@ div#leftCol {
     position: absolute;
     text-align: center;
     width: 400px;
-    height: 96%;
+    height: 106%;
     background-color: #D9F0FF;
     font-size: 21px;
     overflow-y: scroll;
@@ -140,4 +140,5 @@ div#leftCol {
 div#content {
     position: relative;
     margin-left: 0px;
+    text-align: center;
 }

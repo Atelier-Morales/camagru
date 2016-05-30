@@ -60,7 +60,6 @@ if (isset($data["title"])) {
     catch(PDOException $ex) {
         echo "An Error occured! : ".$ex->getMessage();
     }
-
 }
 
 if (isset($data["url"])) {
