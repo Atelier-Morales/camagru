@@ -4,6 +4,8 @@ if (!isset($username) || $login == false) {
 }
 ?>
 
+<script type="text/javascript" src="js/script.js"></script>
+
 <div id="leftCol">
     <h3 style="text-align:center;">Your Pictures</h3>
     <br>
@@ -11,7 +13,7 @@ if (!isset($username) || $login == false) {
     <?php
     for ($i = 0; $i <= (count($pics) - 1); $i++) {
         echo '<img width="320" height="240" id="none" src="data:image/png;base64,'.base64_encode($pics[$i]["src"]).'"/>';
-        echo '<p>'. $pics[$i]["title"] . ' (' . $pics[$i]["date"] . ')</p>';
+        echo '<div><p>'. $pics[$i]["title"] . ' (' . $pics[$i]["date"] . ') <button id="delete" onclick="deleteLink()">X</button></p></div>';
     }
     ?>
 </div>
@@ -56,4 +58,4 @@ if (!isset($username) || $login == false) {
     <img width="320" height="240" id="photo" src=""/>
 </div>
 
-<script type="text/javascript" src="js/script.js"></script>
+

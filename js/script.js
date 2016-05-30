@@ -11,6 +11,10 @@
 
     var streaming = false;
 
+    function deleteLink() {
+        console.log('deleting');
+    }
+
     // The various HTML elements we need to configure or control. These
     // will be set by the startup() function.
 
@@ -20,6 +24,7 @@
     var photo2 = null;
     var startbutton = null;
     var face = null;
+    var deleteButton = null;
 
     function startup() {
         video = document.getElementById('video');
@@ -28,6 +33,7 @@
         photo2 = document.getElementById('photo2');
         startbutton = document.getElementById('startbutton');
         savebutton = document.getElementById('savebutton');
+        deleteButton = document.getElementById('delete');
 
         navigator.getMedia = ( navigator.getUserMedia ||
                               navigator.webkitGetUserMedia ||
@@ -96,8 +102,13 @@
 
         }, false);
 
+        // deleteButton.addEventListener('click', function(ev){
+        //     deleteLink();
+        // }, false);
+
         clearphoto();
     }
+
 
     // Fill the photo with an indication that none has been
     // captured.
