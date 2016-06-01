@@ -18,6 +18,7 @@ var faceChosen = false;
 
 function activateStartButton() {
     document.getElementById('startbutton').disabled = false;
+    document.getElementById('submitFile').disabled = false;
     faceChosen = true;
 }
 
@@ -58,6 +59,7 @@ function activateStartButton() {
         savebutton.disabled = true;
         deleteButton = document.getElementById('delete');
         submitFile = document.getElementById('submitFile');
+        submitFile.disabled = true;
         photoTitle = document.getElementById('photoTitle');
 
 
@@ -161,18 +163,21 @@ function activateStartButton() {
         ev.preventDefault();
         var file = _("fileToUpload").files[0];
         var formData = new FormData();
-        file.face = face;
         ev.preventDefault();
         formData.append("photo", file);
         formData.append("face", face);
         var ajax = new XMLHttpRequest();
+
         ajax.open("POST", "upload.php");
+
         ajax.send(formData);
+
+        ev.preventDefault();
         ajax.onreadystatechange = function() {
             ev.preventDefault();
             if (ajax.readyState == 4 && ajax.status == 200) {
                 console.log(ajax.responseText );
-                if (ajax.responseText !== "ERROR")
+                if (ajax.responseText !== "Please upload a picture")
                     photo2.src = 'http://localhost:8080/' + ajax.responseText + '?' + new Date().getTime();
             }
         };
