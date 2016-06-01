@@ -90,7 +90,7 @@ if (isset($_GET["logout"])) {
 }
 
 require("ajax.php");
-require("upload.php");
+//require("upload.php");
 
 require("header.php");
 

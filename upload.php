@@ -12,13 +12,13 @@ if (isset($_POST)) {
     $fileSize = $_FILES["photo"]["size"];
     $fileErrorMsg = $_FILES["photo"]["error"];
     if (!$fileTmpLoc) {
-        echo "ERROR: Please browse for a file before clicking the upload button.";
+        echo "ERROR";
     }
-    if(move_uploaded_file($fileTmpLoc, "temp/$fileName")) {
-        echo "$fileName upload is complete";
+    if(move_uploaded_file($fileTmpLoc, "temp/preview.png")) {
+        echo "temp/preview.png";
     }
     else {
-        echo "move_uploaded_file function failed";
+        echo "ERROR";
     }
 }
 

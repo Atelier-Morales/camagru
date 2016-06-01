@@ -14,6 +14,13 @@ function deleteLink(id, user_id) {
     };
 }
 
+var faceChosen = false;
+
+function activateStartButton() {
+    document.getElementById('startbutton').disabled = false;
+    faceChosen = true;
+}
+
 (function() {
     // The width and height of the captured photo. We will set the
     // width to the value defined here, but the height will be
@@ -37,7 +44,8 @@ function deleteLink(id, user_id) {
     var startbutton = null;
     var face = null;
     var deleteButton = null;
-    var submitFile = null
+    var submitFile = null;
+    var photoTitle = null;
 
     function startup() {
         video = document.getElementById('video');
@@ -45,9 +53,13 @@ function deleteLink(id, user_id) {
         photo = document.getElementById('photo');
         photo2 = document.getElementById('photo2');
         startbutton = document.getElementById('startbutton');
+        startbutton.disabled = true;
         savebutton = document.getElementById('savebutton');
+        savebutton.disabled = true;
         deleteButton = document.getElementById('delete');
         submitFile = document.getElementById('submitFile');
+        photoTitle = document.getElementById('photoTitle');
+
 
         navigator.getMedia = ( navigator.getUserMedia ||
                               navigator.webkitGetUserMedia ||
@@ -72,6 +84,15 @@ function deleteLink(id, user_id) {
                 console.log("An error occured! " + err);
             }
         );
+
+        photoTitle.addEventListener("input", function(e) {
+            if (photoTitle.value.length > 0 && faceChosen && photo2.src != "http://localhost:8080/") {
+                savebutton.disabled = false;
+                console.log('test2 =' + photo2.src);
+            }
+            else
+                savebutton.disabled = true;
+        }, false);
 
         video.addEventListener('canplay', function(ev){
             if (!streaming) {
@@ -120,8 +141,13 @@ function deleteLink(id, user_id) {
         }, false);
 
         submitFile.addEventListener('click', function(ev){
-            ev.preventDefault();
-            saveUploadedPhoto(ev);
+            for (var i = 1; i <= 6; i++) {
+                if (document.getElementById('markStudent' + i).checked === true) {
+                    face = i;
+                    saveUploadedPhoto(ev);
+                    break ;
+                }
+            }
         }, false);
 
         clearphoto();
@@ -135,13 +161,19 @@ function deleteLink(id, user_id) {
         ev.preventDefault();
         var file = _("fileToUpload").files[0];
         var formData = new FormData();
+        file.face = face;
+        ev.preventDefault();
         formData.append("photo", file);
+        formData.append("face", face);
         var ajax = new XMLHttpRequest();
-        ajax.open("POST", "upload.php"); ajax.send(formData);
+        ajax.open("POST", "upload.php");
+        ajax.send(formData);
         ajax.onreadystatechange = function() {
+            ev.preventDefault();
             if (ajax.readyState == 4 && ajax.status == 200) {
-                ev.preventDefault();
                 console.log(ajax.responseText );
+                if (ajax.responseText !== "ERROR")
+                    photo2.src = 'http://localhost:8080/' + ajax.responseText + '?' + new Date().getTime();
             }
         };
     }
@@ -201,7 +233,7 @@ function deleteLink(id, user_id) {
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 // photo2.src = 'http://localhost:8080/' + xmlhttp.responseText + '?' + new Date().getTime();
-                console.log(xmlhttp.responseText )
+                console.log(xmlhttp.responseText );
                 window.location.reload();
             }
         };
