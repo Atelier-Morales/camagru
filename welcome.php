@@ -4,8 +4,6 @@ if (!isset($username) || $login == false) {
 }
 ?>
 
-<script type="text/javascript" src="js/script.js"></script>
-
 <div id="leftCol">
     <h3 style="text-align:center;">Your Pictures</h3>
     <br>

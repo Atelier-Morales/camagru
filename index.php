@@ -5,27 +5,29 @@ require("config/database.php");
 if (!isset($register))
     $register = false;
 
-if(isset($_POST['submit'])){
+if (isset($_POST['submit'])) {
     $errMsg = '';
     //username and password sent from Form
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
-    if($username == '')
+    if ($username == '')
         $errMsg .= 'You must enter your Username<br>';
 
-    if($password == '')
+    if ($password == '')
         $errMsg .= 'You must enter your Password<br>';
 
-    if($errMsg == ''){
+    if ($errMsg == '') {
         $sql = 'SELECT id, username, email, password FROM user WHERE username = :username OR email = :email';
         $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $records->execute(array(':username' => $username, ':email' => $username));
         $results = $records->fetchAll();
         $hashPass = hash('gost', $password);
-        if(count($results[0]) > 0 && strcmp($hashPass, $results[0]['password']) == 0) {
+        if (count($results[0]) > 0 && strcmp($hashPass, $results[0]['password']) == 0) {
             $username = $results[0]['username'];
             $login = true;
+            $view = 1;
             $_SESSION['username'] = $username;
+            $_SESSION['login'] = $login;
         } else {
             unset($username);
             $errMsg .= 'Username and Password not found<br>';
@@ -33,21 +35,21 @@ if(isset($_POST['submit'])){
     }
 }
 
-if(isset($_POST['submitReg'])){
+if (isset($_POST['submitReg'])) {
     $errMsg = '';
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
     $email = trim($_POST['email']);
-    if($username == '')
+    if ($username == '')
         $errMsg .= 'You must enter your Username<br>';
 
-    if($password == '')
+    if ($password == '')
         $errMsg .= 'You must enter your Password<br>';
 
-    if($email == '')
+    if ($email == '')
         $errMsg .= 'You must enter your Email<br>';
 
-    if($errMsg == '') {
+    if ($errMsg == '') {
         $pass = hash('gost', $password);
         $codedInfo = base64_encode($username . ' ' . $email . ' ' . $pass);
         $headers = "From: test@mydomain.com";
@@ -58,7 +60,7 @@ if(isset($_POST['submitReg'])){
             . "\r\n" .
             "Thank you," . "\r\n" .
             "The Camagru Team";
-        mail($email,"Camagru : Validate your account",$msg, $headers);
+        mail($email, "Camagru : Validate your account", $msg, $headers);
         unset($username);
         $confirm = true;
     }
@@ -77,7 +79,7 @@ if (isset($_GET["token"])) {
         $username = $token[0];
         $login = true;
         $welcome = true;
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo $e->getMessage();
     }
 }
@@ -86,50 +88,66 @@ if (isset($_GET["logout"])) {
     $login = false;
     unset($username);
     unset($_SESSION['username']);
+    unset($_SESSION['login']);
     header("Location: index.php");
 }
 
-require("ajax.php");
+
 //require("upload.php");
 
+if (isset($_GET["gallery"]) || isset($_GET["home"])) {
+    $login = $_SESSION['login'];
+    $username = $_SESSION['username'];
+    error_log("TEST = " . $login);
+    if (isset($_GET["gallery"]))
+        $view = 2;
+    else
+        $view = 1;
+}
+
+require("ajax.php");
 require("header.php");
 
 if (!isset($login) || $login == false) {
     if (isset($_GET["register"])) {
         if (isset($confirm) && $confirm == true) {
             echo '<h2 class="welcome">Please click on the link you have received by email</h2>';
-        }
-        else {
+        } else {
             echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
             require("register.php");
         }
-    }
-    else {
+    } else {
         echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
         require("login.php");
     }
-}
-else {
-    $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, pic.user_id 
-    FROM pictures pic 
-    INNER JOIN user us 
-    ON pic.user_id = us.id 
-    WHERE us.username = :username
-    ORDER BY pic.date DESC';
-    $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $records->execute(array(':username' => $username));
-    $pics = $records->fetchAll();
-    require("welcome.php");
-    if (isset($welcome) && $welcome == true) {
-        $message = "welcome to camagru, ". $username;
-        echo '<script type="text/javascript">'
-        , 'window.alert("' . $message . '");'
-        , '</script>'
-        ;
+} else {
+    if ($view == 1) {
+        $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, pic.user_id 
+                FROM pictures pic 
+                INNER JOIN user us 
+                ON pic.user_id = us.id 
+                WHERE us.username = :username
+                ORDER BY pic.date DESC';
+        $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $records->execute(array(':username' => $username));
+        $pics = $records->fetchAll();
+        require("welcome.php");
+        if (isset($welcome) && $welcome == true) {
+            $message = "welcome to camagru, " . $username;
+            echo '<script type="text/javascript">'
+            , 'window.alert("' . $message . '");'
+            , '</script>';
+        }
     }
+    else if ($view == 2) {
+        require("gallery.php");
+    }
+    echo '<script type="text/javascript" src="js/script.js"></script>';
 }
+
 
 echo '<br>';
 
 require("footer.php");
 ?>
+

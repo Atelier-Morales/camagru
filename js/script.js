@@ -14,6 +14,18 @@ function deleteLink(id, user_id) {
     };
 }
 
+function changeView(value) {
+    var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+    xmlhttp.open("POST", "../index.php");
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify({view: value}));
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            console.log(xmlhttp.responseText);
+        }
+    };
+}
+
 var faceChosen = false;
 
 function activateStartButton() {

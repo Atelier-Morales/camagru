@@ -19,11 +19,6 @@ if (isset($_POST)) {
         $dest = imagecreatefromstring(file_get_contents('temp/preview.png'));
         $src = imagecreatefrompng($facePicture);
 
-//    imagealphablending($image_1, true);
-//    imagesavealpha($image_1, true);
-//    imagecopy($image_1, $image_2, 0, 0, 0, 0, 100, 100);
-//    imagepng($image_1, 'image_3.png')
-
         imagealphablending($dest, true);
         imagesavealpha($dest, true);
 

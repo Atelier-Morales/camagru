@@ -7,7 +7,15 @@
     <ul class="header-subnav">
         <?php
         if (isset($username)) {
-            echo '<li><a style="cursor:default;" href="#" class="is-active">Hello '.$username.'</a></li>';
+            if ($view == 1) {
+                echo '<li><a href="index.php?home" class="is-active">Hello '.$username.'</a></li>';
+                echo '<li><a href="index.php?gallery">Gallery</a></li>';
+            }
+            else {
+                echo '<li><a href="index.php?home" >Hello '.$username.'</a></li>';
+                echo '<li><a href="index.php?gallery" class="is-active">Gallery</a></li>';
+            }
+
             echo '<li><a href="index.php?logout">Logout</a></li>';
         }
         ?>
