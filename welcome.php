@@ -5,9 +5,8 @@ if (!isset($username) || $login == false) {
 ?>
 
 <div id="leftCol">
-    <h3 style="text-align:center;">Your Pictures</h3>
+    <h3 style="text-align:center; font-family: helvetica;">Your Pictures</h3>
     <br>
-<!--    <img width="320" height="240" id="photo2" src=""/>-->
     <?php
     for ($i = 0; $i <= (count($pics) - 1); $i++) {
         echo '<img width="320" height="240" id="none" src="data:image/png;base64,'.base64_encode($pics[$i]["src"]).'"/>';
@@ -20,7 +19,7 @@ if (!isset($username) || $login == false) {
 </div>
 
 <div id="content">
-    <h1 style="text-align:center;">Take a picture and make your own montage!</h1>
+    <h1 style="text-align:center; font-family: helvetica;">Take a picture and make your own montage!</h1>
 
     <div id="radioGroup">
         <?php

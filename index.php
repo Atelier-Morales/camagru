@@ -98,7 +98,6 @@ if (isset($_GET["logout"])) {
 if (isset($_GET["gallery"]) || isset($_GET["home"])) {
     $login = $_SESSION['login'];
     $username = $_SESSION['username'];
-    error_log("TEST = " . $login);
     if (isset($_GET["gallery"]))
         $view = 2;
     else
@@ -140,6 +139,11 @@ if (!isset($login) || $login == false) {
         }
     }
     else if ($view == 2) {
+        $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, us.username 
+                FROM pictures pic INNER JOIN user us ON pic.user_id = us.id';
+        $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $records->execute();
+        $pictures = $records->fetchAll();
         require("gallery.php");
     }
     echo '<script type="text/javascript" src="js/script.js"></script>';

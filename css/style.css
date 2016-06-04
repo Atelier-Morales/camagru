@@ -51,11 +51,17 @@
 }
 
 .footer {
+    position: relative;
+    right: 0;
+    bottom: 0;
+    left: 0;
     background-color: #292c2f;
     text-align: center;
     font-size: 1.2rem;
-    padding: 4rem;
-    bottom: 0;
+    padding: 2rem 0rem 3rem 0rem;
+    float:left;
+    width: 100%;
+    margin-top: 50px;
     font-family: helvetica;
 }
 
@@ -96,21 +102,23 @@
 }
 
 .camera {
-    text-align:center;
+    text-align: center;
 }
 
 #radioGroup {
-    text-align:center;
+    text-align: center;
 }
 
 #radioGroup .wrap {
     display: inline-block;
 }
+
 #radioGroup label {
     display: block;
     text-align: center;
     margin: 0 0.2em;
 }
+
 #radioGroup input[type="radio"] {
     display: block;
     margin: 0.5em auto;
@@ -141,4 +149,81 @@ div#content {
     position: relative;
     margin-left: 0px;
     text-align: center;
+}
+
+.sticky {
+    position: relative;
+    top: 0;
+}
+
+@import url(//fonts.googleapis.com/css?family=Roboto:400,500,300,100,700,900);
+
+.card {
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    color: #272727;
+    border-radius: 2px;
+}
+
+.card .title {
+    line-height: 3rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.card .content {
+    padding: 1.3rem;
+    font-weight: 300;
+    border-radius: 0 0 2px 2px;
+}
+
+.card p {
+    margin: 0;
+}
+
+.card .action {
+    border-top: 1px solid rgba(160, 160, 160, 0.2);
+    padding: 1.3rem;
+}
+
+.card a {
+    color: #ffab40;
+    margin-right: 1.3rem;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.card .image {
+    position: relative;
+}
+
+.card .image .title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 1.3rem;
+    color: #fff;
+}
+
+.card .image img {
+    border-radius: 2px 2px 0 0;
+}
+
+.columns {
+    width: 474px;
+    display: inline-block;
+    padding: 0.2rem;
+}
+
+div#content2 {
+    text-align: center;
+}
+
+.columns-footer {
+    text-align: center;
+    width: 100%;
+    position: relative;
+    float: left;
 }

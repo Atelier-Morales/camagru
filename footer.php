@@ -1,7 +1,7 @@
 
-<footer class="footer">
+<footer id="footer" class="footer">
     <div class="row">
-        <div class="small-12 columns">
+        <div class="columns-footer">
             <p class="slogan">Have a nice day!</p>
             <p class="links">
                 <a href="#">Contact me!</a>
