@@ -92,7 +92,6 @@ if (isset($_GET["logout"])) {
     header("Location: index.php");
 }
 
-
 //require("upload.php");
 
 if (isset($_GET["gallery"]) || isset($_GET["home"])) {
