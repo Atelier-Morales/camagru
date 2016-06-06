@@ -17,15 +17,21 @@
         echo '<div class="columns">
             <div class="card">
                 <div class="image">
-                    <img width="527px" height="350" src="data:image/png;base64,' . base64_encode($pictures[$i]["src"]) . '">
-                    <span class="title">' . $pictures[$i]["title"] . '</span>
+                    <div class="image-wrapper overlay-fade-in">
+                        <img width="527px" id="'. $pictures[$i]["id"] .'" height="350" src="data:image/png;base64,' . base64_encode($pictures[$i]["src"]) . '">
+                        <span class="title">' . $pictures[$i]["title"] . '</span>
+                        <div class="image-overlay-content" onclick="openModal(
+                        \''.$username.'\',
+                        \''.$pictures[$i]["title"].'\',
+                        \''.$pictures[$i]["date"].'\',
+                        \''.$pictures[$i]["username"].'\',
+                        \''.$pictures[$i]["id"].'\'
+                        )">
+                            <h2>' . $pictures[$i]["title"] . '</h2>
+                            <p class="title">Posted by ' . $pictures[$i]["username"] . ' on ' . $pictures[$i]["date"] . '</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="content">
-                    <p>Posted by ' . $pictures[$i]["username"] . ' on ' . $pictures[$i]["date"] . '</p>
-                </div>
-            <div class="action">
-                <a href=\'#\'>view Picture</a>
-            </div>
         </div>
         </div>';
     }
@@ -46,5 +52,18 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
+
+</div>
+
+
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">x</span>
+        <p>Some textFUCK  in the Modal..</p>
+    </div>
 
 </div>

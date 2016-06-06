@@ -146,6 +146,7 @@ if (!isset($login) || $login == false) {
         require("gallery.php");
     }
     echo '<script type="text/javascript" src="js/script.js"></script>';
+    echo '<script type="text/javascript" src="js/gallery.js"></script>';
 }
 
 
