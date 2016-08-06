@@ -90,4 +90,93 @@ if (isset($data["url"])) {
     echo('temp/blend.png');
 }
 
+if (isset($data["picture_to_like"])) {
+    $username = $_SESSION['username'];
+    try {
+        $sql = $db->prepare('INSERT INTO likes (username, picture_id) VALUES(:username, :picture_id)');
+        $sql->bindParam(':username', $username, PDO::PARAM_STR);
+        $sql->bindParam(':picture_id' , $data["picture_to_like"]);
+        $db->beginTransaction();
+        $sql->execute();
+        $db->commit();
+        if ($sql)
+            echo "success";
+        else
+            echo "fail";
+    }
+    catch(PDOException $ex) {
+        echo "An Error occured! : ".$ex->getMessage();
+    }
+}
+
+if (isset($data["picture_to_unlike"])) {
+    $username = $_SESSION['username'];
+    try {
+        $sql = $db->prepare('DELETE FROM likes WHERE picture_id = :picture_id AND username = :username');
+        $sql->bindParam(':username', $username, PDO::PARAM_STR);
+        $sql->bindParam(':picture_id' , $data["picture_to_unlike"]);
+        $db->beginTransaction();
+        $sql->execute();
+        $db->commit();
+        if ($sql)
+            echo "success";
+        else
+            echo "fail";
+    }
+    catch(PDOException $ex) {
+        echo "An Error occured! : ".$ex->getMessage();
+    }
+}
+
+if (isset($data["modal_id"])) {
+
+    function fetchLikes($index, $likes) {
+        $picture_likes = array();
+        for ($k = 0; $k < count($likes); $k++) {
+            if ($likes[$k]["picture_id"] == $index)
+                array_push($picture_likes, $likes[$k]["username"]);
+        }
+        return $picture_likes;
+    }
+
+    $pic_id = $data["modal_id"];
+    //fetch pictures first
+    $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, us.username 
+                FROM pictures pic INNER JOIN user us ON pic.user_id = us.id';
+    $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $records->execute();
+    $pictures = $records->fetchAll();
+
+    //then likes
+    $sql2 = 'SELECT username, picture_id FROM likes';
+    $records2 = $db->prepare($sql2, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $records2->execute();
+    $likes = $records2->fetchAll();
+    $found = -1;
+    for ($index = 0; $index < count($pictures); $index++) {
+        if ($pictures[$index]["id"] == $pic_id) {
+            $found = $index;
+            $like_array = '';
+            $pic_likes = fetchLikes($pictures[$index]["id"], $likes);
+            for ($f = 0; $f < count($pic_likes); $f++) {
+                $like_array = $like_array . $pic_likes[$f];
+                if ($f + 1 != count($pic_likes))
+                    $like_array = $like_array . ';';
+            }
+            break ;
+        }
+    }
+    if ($found > -1) {
+        $username = $_SESSION['username'];
+        echo $username. ',' .
+            $pictures[$found]["title"] . ','.
+            $pictures[$found]["date"] . ',' .
+            $pictures[$found]["username"] . ',' .
+            $pictures[$found]["id"] . ',' .
+            $like_array;
+    }
+    else
+        echo "fail";
+}
+
 ?>

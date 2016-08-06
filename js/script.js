@@ -1,7 +1,5 @@
 
 function deleteLink(id, user_id) {
-    console.log(id + ' ' + user_id);
-
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
     xmlhttp.open("POST", "../ajax.php");
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -66,14 +64,16 @@ function activateStartButton() {
         photo = document.getElementById('photo');
         photo2 = document.getElementById('photo2');
         startbutton = document.getElementById('startbutton');
-        startbutton.disabled = true;
+        if (startbutton !== null)
+            startbutton.disabled = true;
         savebutton = document.getElementById('savebutton');
-        savebutton.disabled = true;
+        if (savebutton !== null)
+            savebutton.disabled = true;
         deleteButton = document.getElementById('delete');
         submitFile = document.getElementById('submitFile');
-        submitFile.disabled = true;
+        if (submitFile !== null)
+            submitFile.disabled = true;
         photoTitle = document.getElementById('photoTitle');
-
 
         navigator.getMedia = ( navigator.getUserMedia ||
                               navigator.webkitGetUserMedia ||

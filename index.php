@@ -136,17 +136,25 @@ if (!isset($login) || $login == false) {
             , 'window.alert("' . $message . '");'
             , '</script>';
         }
+        echo '<script type="text/javascript" src="js/script.js"></script>';
     }
     else if ($view == 2) {
+
+        //fetch pictures first
         $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, us.username 
                 FROM pictures pic INNER JOIN user us ON pic.user_id = us.id';
         $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $records->execute();
         $pictures = $records->fetchAll();
+
+        //then likes
+        $sql2 = 'SELECT username, picture_id FROM likes';
+        $records2 = $db->prepare($sql2, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $records2->execute();
+        $likes = $records2->fetchAll();
+        echo '<script type="text/javascript" src="js/gallery.js"></script>';
         require("gallery.php");
     }
-    echo '<script type="text/javascript" src="js/script.js"></script>';
-    echo '<script type="text/javascript" src="js/gallery.js"></script>';
 }
 
 
