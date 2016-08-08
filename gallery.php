@@ -30,15 +30,37 @@
         return $picture_likes;
     }
 
+    function fetchComments($index, $comments) {
+        $picture_comments = array();
+        for ($n = 0; $n < count($comments); $n++) {
+            if ($comments[$n]["picture_id"] == $index) {
+                $output = '[\''. $comments[$n]["username"] . '\',\'' . $comments[$n]["comment"] .'\']';
+                array_push($picture_comments, $output);
+            }
+        }
+        return $picture_comments;
+    }
+
     for ($i = 0; $i <= (count($pictures) - 1); $i++) {
+
         $like_array = '[';
         $pic_likes = fetchLikes($pictures[$i]["id"], $likes);
         for ($f = 0; $f < count($pic_likes); $f++) {
-            $like_array = $like_array.'\''.$pic_likes[$f].'\'';
+            $like_array .= '\''.$pic_likes[$f].'\'';
             if ($f + 1 != count($pic_likes))
-                $like_array = $like_array . ',';
+                $like_array .= ',';
         }
-        $like_array = $like_array . ']';
+        $like_array .= ']';
+
+        $comment_array = '[';
+        $pic_comments = fetchComments($pictures[$i]["id"], $comments);
+        for ($q = 0; $q < count($pic_comments); $q++) {
+            $comment_array .= $pic_comments[$q];
+            if ($q + 1 != count($pic_comments))
+                $comment_array .= ',';
+        }
+        $comment_array .= ']';
+
         echo '<div class="columns">
             <div class="card">
                 <div class="image">
@@ -51,25 +73,23 @@
                         \'' . $pictures[$i]["date"] . '\',
                         \'' . $pictures[$i]["username"] . '\',
                         \'' . $pictures[$i]["id"] . '\',
-                        ' . $like_array .'
+                        ' . $like_array .',
+                        ' . $comment_array . '
+                        
                         )">
                             <h2>' . $pictures[$i]["title"] . '</h2>
-                            <p class="title">Posted by ' . $pictures[$i]["username"] . ' on ' . $pictures[$i]["date"] . '</p>
-                            <p class="title">' . countLikes($pictures[$i]["id"], $likes) . ' likes</p>
+                            <p style="top: 0px !important" class="title">Posted by ' . $pictures[$i]["username"] . ' on ' . $pictures[$i]["date"] . '</p>
+                            
+                            <p class="title">' . countLikes($pictures[$i]["id"], $likes) . ' likes / ' . countLikes($pictures[$i]["id"], $comments) . ' Comments</p><br>
                         </div>
                     </div>
                 </div>
         </div>
         </div>';
     }
-
-
-
     ?>
 
 </div>
-
-
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -81,6 +101,10 @@
         <img width="80%" id="imageView" src="">
         <p id="likes"></p>
         <p id="like-button"></p>
+        <div id="comment-section"></div>
+        <br>
+        <p>Comment this picture:</p>
+        <textarea id="comment" style="width: 80%"></textarea>
     </div>
 
 </div>

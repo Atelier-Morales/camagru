@@ -1,7 +1,7 @@
 <?php
-if (!isset($username) || $login == false) {
-    header("Location: index.php");
-}
+//if (!isset($username) || $login == false) {
+//    header("Location: index.php");
+//}
 ?>
 
 <div align="center">

@@ -56,7 +56,7 @@ if (isset($_POST['submitReg'])) {
         $msg = "Hello " . $username . "\r\n" .
             "In order to complete your registration, please validate your account via this link :"
             . "\r\n" .
-            "http://localhost:8080/index.php?token=" . $codedInfo
+            "http://localhost:8080/camagru/index.php?token=" . $codedInfo
             . "\r\n" .
             "Thank you," . "\r\n" .
             "The Camagru Team";
@@ -79,8 +79,10 @@ if (isset($_GET["token"])) {
         $username = $token[0];
         $login = true;
         $welcome = true;
+        header("Location: index.php");
     } catch (PDOException $e) {
-        echo $e->getMessage();
+//        echo $e->getMessage();
+        header("Location: index.php");
     }
 }
 
@@ -152,8 +154,16 @@ if (!isset($login) || $login == false) {
         $records2 = $db->prepare($sql2, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $records2->execute();
         $likes = $records2->fetchAll();
+
+        //and finally comments
+        $sql3 = 'SELECT username, picture_id, comment FROM Comments';
+        $records3 = $db->prepare($sql3, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $records3->execute();
+        $comments = $records3->fetchAll();
+
         echo '<script type="text/javascript" src="js/gallery.js"></script>';
         require("gallery.php");
+
     }
 }
 

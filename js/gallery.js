@@ -16,7 +16,7 @@ if (window.location.href.split("#").length > 1) {
     var viewValue = window.location.href.split("#")[1];
     if (viewValue.split("=")[1].length > 0) {
         var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-        xmlhttp.open("POST", "../ajax.php");
+        xmlhttp.open("POST", "../camagru/ajax.php");
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.send(JSON.stringify({modal_id: viewValue.split("=")[1]}));
         xmlhttp.onreadystatechange = function() {
@@ -46,7 +46,7 @@ function mouseLeave(index) {
 
 function unlike(user, id) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", "../ajax.php");
+    xmlhttp.open("POST", "../camagru/ajax.php");
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify({username: user, picture_to_unlike : id}));
     xmlhttp.onreadystatechange = function() {
@@ -59,7 +59,7 @@ function unlike(user, id) {
 
 function like(user, id) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", "../ajax.php");
+    xmlhttp.open("POST", "../camagru/ajax.php");
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify({username: user, picture_to_like : id}));
     xmlhttp.onreadystatechange = function() {
@@ -70,8 +70,8 @@ function like(user, id) {
     };
 }
 
-function openModal(user, title, date, owner, id, likes) {
-    // console.log(user + ' ' + title + ' ' + date + ' ' + owner + ' ' + id);
+function openModal(user, title, date, owner, id, likes, comments) {
+    console.log(comments);
     window.location = window.location.href.split("#")[0] + "#view=" + id;
     var modal = document.getElementById('myModal');
     modal.style.display = "block";
