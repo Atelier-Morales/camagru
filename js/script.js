@@ -1,7 +1,7 @@
 
 function deleteLink(id, user_id) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", "../ajax.php");
+    xmlhttp.open("POST", "../camagru/ajax.php");
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify({user_id: user_id, id_delete : id}));
     xmlhttp.onreadystatechange = function() {
@@ -14,7 +14,7 @@ function deleteLink(id, user_id) {
 
 function changeView(value) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", "../index.php");
+    xmlhttp.open("POST", "../camagru/index.php");
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify({view: value}));
     xmlhttp.onreadystatechange = function() {
@@ -100,7 +100,7 @@ function activateStartButton() {
         );
 
         photoTitle.addEventListener("input", function(e) {
-            if (photoTitle.value.length > 0 && faceChosen && photo2.src != "http://localhost:8080/") {
+            if (photoTitle.value.length > 0 && faceChosen && photo2.src != "http://localhost:8080/camagru/") {
                 savebutton.disabled = false;
                 console.log('test2 =' + photo2.src);
             }
@@ -144,7 +144,7 @@ function activateStartButton() {
             if (document.getElementById('photoTitle').value.length < 1)
                 alert('please choose a title');
             else {
-                if (photo2.src == "http://localhost:8080/index.php")
+                if (photo2.src == "http://localhost:8080/camagru/index.php")
                     alert('please take a picture or upload an image');
                 else {
                     savepicture();
@@ -190,7 +190,7 @@ function activateStartButton() {
             if (ajax.readyState == 4 && ajax.status == 200) {
                 console.log(ajax.responseText );
                 if (ajax.responseText !== "Please upload a picture")
-                    photo2.src = 'http://localhost:8080/' + ajax.responseText + '?' + new Date().getTime();
+                    photo2.src = 'http://localhost:8080/camagru/' + ajax.responseText + '?' + new Date().getTime();
             }
         };
     }
@@ -213,7 +213,7 @@ function activateStartButton() {
 
     function savepicture() {
         var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-        xmlhttp.open("POST", "../ajax.php");
+        xmlhttp.open("POST", "../camagru/ajax.php");
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         var today = new Date();
         var dd = today.getDate();
@@ -266,12 +266,12 @@ function activateStartButton() {
             var data = canvas.toDataURL('image/png');
             photo.setAttribute('src', data);
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-            xmlhttp.open("POST", "../ajax.php");
+            xmlhttp.open("POST", "../camagru/ajax.php");
             xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xmlhttp.send(JSON.stringify({url: data, face : face}));
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    photo2.src = 'http://localhost:8080/' + xmlhttp.responseText + '?' + new Date().getTime();
+                    photo2.src = 'http://localhost:8080/camagru/' + xmlhttp.responseText + '?' + new Date().getTime();
                 }
             };
         } else {
