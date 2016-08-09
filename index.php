@@ -24,10 +24,12 @@ if (isset($_POST['submit'])) {
         $hashPass = hash('gost', $password);
         if (count($results[0]) > 0 && strcmp($hashPass, $results[0]['password']) == 0) {
             $username = $results[0]['username'];
+            $email = $results[0]['email'];
             $login = true;
             $view = 1;
             $_SESSION['username'] = $username;
             $_SESSION['login'] = $login;
+            $_SESSION['email'] = $email;
         } else {
             unset($username);
             $errMsg .= 'Username and Password not found<br>';
@@ -156,7 +158,7 @@ if (!isset($login) || $login == false) {
         $likes = $records2->fetchAll();
 
         //and finally comments
-        $sql3 = 'SELECT username, picture_id, comment FROM Comments';
+        $sql3 = 'SELECT username, picture_id, comment, date_published FROM Comments';
         $records3 = $db->prepare($sql3, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $records3->execute();
         $comments = $records3->fetchAll();

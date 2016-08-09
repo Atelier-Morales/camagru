@@ -34,7 +34,7 @@
         $picture_comments = array();
         for ($n = 0; $n < count($comments); $n++) {
             if ($comments[$n]["picture_id"] == $index) {
-                $output = '[\''. $comments[$n]["username"] . '\',\'' . $comments[$n]["comment"] .'\']';
+                $output = '[\''. $comments[$n]["username"] . '\',\'' . $comments[$n]["comment"] .'\',\''. $comments[$n]["date_published"] .'\']';
                 array_push($picture_comments, $output);
             }
         }
@@ -42,7 +42,6 @@
     }
 
     for ($i = 0; $i <= (count($pictures) - 1); $i++) {
-
         $like_array = '[';
         $pic_likes = fetchLikes($pictures[$i]["id"], $likes);
         for ($f = 0; $f < count($pic_likes); $f++) {
@@ -60,24 +59,22 @@
                 $comment_array .= ',';
         }
         $comment_array .= ']';
-
         echo '<div class="columns">
             <div class="card">
                 <div class="image">
                     <div class="image-wrapper overlay-fade-in">
                         <img width="527px" id="' . $pictures[$i]["id"] . '" height="350" src="data:image/png;base64,' . base64_encode($pictures[$i]["src"]) . '">
-                        <span class="title" id="image-title' . $i . '">' . $pictures[$i]["title"] . '</span>
+                        <span class="title" id="image-title' . $i . '">' . htmlspecialchars($pictures[$i]["title"], ENT_QUOTES, "UTF-8") . '</span>
                         <div onmouseenter="mouseEnter(\'' . $i . '\')" onmouseleave="mouseLeave(\'' . $i . '\')" class="image-overlay-content" onclick="openModal(
                         \'' . $username . '\',
-                        \'' . $pictures[$i]["title"] . '\',
+                        \'' . htmlspecialchars($pictures[$i]["title"], ENT_QUOTES, "UTF-8") . '\',
                         \'' . $pictures[$i]["date"] . '\',
                         \'' . $pictures[$i]["username"] . '\',
                         \'' . $pictures[$i]["id"] . '\',
-                        ' . $like_array .',
-                        ' . $comment_array . '
-                        
+                        ' . htmlspecialchars($like_array, ENT_QUOTES, "UTF-8") .',
+                        ' . htmlspecialchars($comment_array, ENT_QUOTES, "UTF-8") . '
                         )">
-                            <h2>' . $pictures[$i]["title"] . '</h2>
+                            <h2>' . htmlspecialchars($pictures[$i]["title"], ENT_QUOTES, "UTF-8") . '</h2>
                             <p style="top: 0px !important" class="title">Posted by ' . $pictures[$i]["username"] . ' on ' . $pictures[$i]["date"] . '</p>
                             
                             <p class="title">' . countLikes($pictures[$i]["id"], $likes) . ' likes / ' . countLikes($pictures[$i]["id"], $comments) . ' Comments</p><br>
@@ -105,6 +102,8 @@
         <br>
         <p>Comment this picture:</p>
         <textarea id="comment" style="width: 80%"></textarea>
+        <br>
+        <div id="publish-button"></div>
     </div>
 
 </div>

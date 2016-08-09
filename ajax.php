@@ -128,6 +128,28 @@ if (isset($data["picture_to_unlike"])) {
     }
 }
 
+if (isset($data["comment"])) {
+    $username = $_SESSION['username'];
+    try {
+        $sql = $db->prepare('INSERT INTO Comments (username, picture_id, comment, date_published) VALUES(:username, :picture_id, :comment, :date_published)');
+        $sql->bindParam(':username', $username, PDO::PARAM_STR);
+        $sql->bindParam(':picture_id' , $data["picture_id"]);
+        $sql->bindParam(':comment' , $data["comment"]);
+        $sql->bindParam(':date_published' , $data["date"]);
+        $db->beginTransaction();
+        $sql->execute();
+        $db->commit();
+
+        if ($sql)
+            echo "success";
+        else
+            echo "fail";
+    }
+    catch (PDOException $e) {
+        echo "An Error occured! : ".$e->getMessage();
+    }
+}
+
 if (isset($data["modal_id"])) {
 
     function fetchLikes($index, $likes) {
@@ -137,6 +159,17 @@ if (isset($data["modal_id"])) {
                 array_push($picture_likes, $likes[$k]["username"]);
         }
         return $picture_likes;
+    }
+
+    function fetchComments($index, $comments) {
+        $picture_comments = array();
+        for ($q = 0; $q < count($comments); $q++) {
+            if ($comments[$q]["picture_id"] == $index) {
+                $dump = array($comments[$q]["username"], $comments[$q]["comment"], $comments[$q]["date_published"]);
+                $picture_comments[] = $dump;
+            }
+        }
+        return $picture_comments;
     }
 
     $pic_id = $data["modal_id"];
@@ -152,31 +185,38 @@ if (isset($data["modal_id"])) {
     $records2 = $db->prepare($sql2, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $records2->execute();
     $likes = $records2->fetchAll();
+
+    //and finally comments
+    $sql3 = 'SELECT username, picture_id, comment, date_published FROM Comments';
+    $records3 = $db->prepare($sql3, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $records3->execute();
+    $comments = $records3->fetchAll();
+
     $found = -1;
     for ($index = 0; $index < count($pictures); $index++) {
         if ($pictures[$index]["id"] == $pic_id) {
             $found = $index;
-            $like_array = '';
             $pic_likes = fetchLikes($pictures[$index]["id"], $likes);
-            for ($f = 0; $f < count($pic_likes); $f++) {
-                $like_array = $like_array . $pic_likes[$f];
-                if ($f + 1 != count($pic_likes))
-                    $like_array = $like_array . ';';
-            }
+
+            $pic_comments = fetchComments($pictures[$index]["id"], $comments);
+
             break ;
         }
     }
     if ($found > -1) {
         $username = $_SESSION['username'];
-        echo $username. ',' .
-            $pictures[$found]["title"] . ','.
-            $pictures[$found]["date"] . ',' .
-            $pictures[$found]["username"] . ',' .
-            $pictures[$found]["id"] . ',' .
-            $like_array;
+        $response = array();
+        $response[0] = $username;
+        $response[1] = $pictures[$found]["title"];
+        $response[2] = $pictures[$found]["date"];
+        $response[3] = $pictures[$found]["username"];
+        $response[4] = $pictures[$found]["id"];
+        $response[5] = $pic_likes;
+        $response[6] = $pic_comments;
+        echo json_encode($response);
+
     }
     else
         echo "fail";
 }
-
 ?>

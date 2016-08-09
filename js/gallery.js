@@ -21,17 +21,57 @@ if (window.location.href.split("#").length > 1) {
         xmlhttp.send(JSON.stringify({modal_id: viewValue.split("=")[1]}));
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                var resp = xmlhttp.responseText.split(",");
-                var likesModal = [];
-                if (resp[5] !== '') {
-                    resp[5].split(";").forEach(function(element) {
-                        likesModal.push(element);
-                    });
-                }
-                openModal(resp[0], resp[1], resp[2], resp[3], resp[4], likesModal);
+                var resp = JSON.parse(xmlhttp.responseText);
+                openModal(resp[0], resp[1], resp[2], resp[3], resp[4], resp[5], resp[6]);
             }
         };
     }
+}
+
+function escapeHtml(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function getCurrentDate() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    var HH = today.getHours();
+    var MM = today.getMinutes();
+    var SS = today.getSeconds();
+
+    if(dd<10) {
+        dd='0'+dd
+    }
+
+    if(mm<10) {
+        mm='0'+mm
+    }
+
+    if(HH<10) {
+        HH='0'+HH
+    }
+
+    if(MM<10) {
+        MM='0'+MM
+    }
+
+    if(SS<10) {
+        SS='0'+SS
+    }
+
+    today = yyyy + '-' + mm + '-' + dd + ' ' + HH + ':' + MM + ':' + SS;
+
+    return (today);
 }
 
 function mouseEnter(index) {
@@ -44,34 +84,44 @@ function mouseLeave(index) {
     imageTitle.style.opacity = 1;
 }
 
-function unlike(user, id) {
+function sendRequest(body, id) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
     xmlhttp.open("POST", "../camagru/ajax.php");
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlhttp.send(JSON.stringify({username: user, picture_to_unlike : id}));
+    xmlhttp.send(JSON.stringify(body));
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             window.location = window.location.href.split("#")[0] + "#view=" + id;
             window.location.reload();
         }
     };
+}
+
+function unlike(user, id) {
+    var body = {};
+    body.username = user;
+    body.picture_to_unlike = id;
+    sendRequest(body, id);
 }
 
 function like(user, id) {
-    var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", "../camagru/ajax.php");
-    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlhttp.send(JSON.stringify({username: user, picture_to_like : id}));
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            window.location = window.location.href.split("#")[0] + "#view=" + id;
-            window.location.reload();
-        }
-    };
+    var body = {};
+    body.username = user;
+    body.picture_to_like = id;
+    sendRequest(body, id);
+}
+
+function publishComment(user, id, owner, commentText, date) {
+    var body = {};
+    body.user = user;
+    body.picture_id = id;
+    body.comment = commentText;
+    body.owner = owner;
+    body.date = date;
+    sendRequest(body, id)
 }
 
 function openModal(user, title, date, owner, id, likes, comments) {
-    console.log(comments);
     window.location = window.location.href.split("#")[0] + "#view=" + id;
     var modal = document.getElementById('myModal');
     modal.style.display = "block";
@@ -99,7 +149,7 @@ function openModal(user, title, date, owner, id, likes, comments) {
         for (var i = 0; i < likes.length; i++) {
             if (likes[i] === user)
                 found = true;
-            text += likes[i];
+            text += escapeHtml(likes[i]);
             if (i + 1 !== likes.length)
                 text += ', ';
         }
@@ -122,7 +172,33 @@ function openModal(user, title, date, owner, id, likes, comments) {
         }
         likeButton.appendChild(link);
     }
-
+    var publishButton = document.getElementById('publish-button');
+    while (publishButton.hasChildNodes()) {
+        publishButton.removeChild(publishButton .lastChild);
+    }
+    var pub = document.createElement('button');
+    pub.innerHTML = 'Publish';
+    pub.onclick = function(event) {
+        publishComment(user, id, owner, document.getElementById('comment').value, getCurrentDate());
+    };
+    publishButton.appendChild(pub);
+    var commentSection = document.getElementById('comment-section');
+    while (commentSection.hasChildNodes()) {
+        commentSection.removeChild(commentSection .lastChild);
+    }
+    for (var i = 0; i < comments.length; i++) {
+        var texto = document.createElement('p');
+        var name = document.createElement('h4');
+        name.innerHTML = escapeHtml(comments[i][0]);
+        var date = document.createElement('small');
+        date.innerHTML = ' - ' + comments[i][2];
+        name.appendChild(date);
+        texto.appendChild(name);
+        var content = document.createElement('blockquote');
+        content.innerHTML = escapeHtml(comments[i][1]);
+        commentSection.appendChild(texto);
+        commentSection.appendChild(content);
+    }
 }
 
 function closeModal() {
@@ -139,4 +215,4 @@ window.onclick = function(event) {
         window.location = window.location.href.split("#")[0] + "#view=";
         modal.style.display = "none";
     }
-}
+};

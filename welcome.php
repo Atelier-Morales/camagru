@@ -4,19 +4,7 @@ if (!isset($username) || $login == false) {
 }
 ?>
 
-<div id="leftCol">
-    <h3 style="text-align:center; font-family: helvetica;">Your Pictures</h3>
-    <br>
-    <?php
-    for ($i = 0; $i <= (count($pics) - 1); $i++) {
-        echo '<img width="320" height="240" id="none" src="data:image/png;base64,'.base64_encode($pics[$i]["src"]).'"/>';
-        echo
-            '<div><p>'. $pics[$i]["title"] . ' (' . $pics[$i]["date"] .
-            ') <button id="delete" onclick="deleteLink(\''.$pics[$i]["id"].
-            '\',\''.$pics[$i]["user_id"].'\')">X</button></p></div>';
-    }
-    ?>
-</div>
+
 
 <div id="content">
     <h1 style="text-align:center; font-family: helvetica;">Take a picture and make your own montage!</h1>
@@ -65,6 +53,22 @@ if (!isset($username) || $login == false) {
     </canvas>
 
     <img width="320" height="240" id="photo" src=""/>
+</div>
+
+<div id="leftCol">
+    <h3 style="text-align:center; font-family: helvetica;">Your Pictures</h3>
+    <br>
+    <?php
+    echo '<div class="image-container">';
+    for ($i = 0; $i <= (count($pics) - 1); $i++) {
+        echo '<div class="image-mini"><img width="320" height="240" id="none" src="data:image/png;base64,'.base64_encode($pics[$i]["src"]).'"/>';
+        echo
+            '<div><p>'. htmlspecialchars($pics[$i]["title"], ENT_QUOTES, "UTF-8") . ' (' . htmlspecialchars($pics[$i]["date"], ENT_QUOTES, "UTF-8") .
+            ') <button id="delete" onclick="deleteLink(\''.$pics[$i]["id"].
+            '\',\''.$pics[$i]["user_id"].'\')">X</button></p></div></div>';
+    }
+    echo '</div>';
+    ?>
 </div>
 
 

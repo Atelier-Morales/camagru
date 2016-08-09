@@ -47,7 +47,7 @@ try {
                     `username` VARCHAR(64) NOT NULL,
                     `picture_id`  INT NOT NULL,
                     `comment` VARCHAR(64) NOT NULL,
-                    `date` VARCHAR(64) NOT NULL,
+                    `date_published` VARCHAR(64) NOT NULL,
                     PRIMARY KEY (`id`)
                 )
                 ENGINE = InnoDB");
