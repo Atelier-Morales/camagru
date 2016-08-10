@@ -140,6 +140,26 @@ if (isset($data["comment"])) {
         $sql->execute();
         $db->commit();
 
+        $records_init = $db->prepare('SELECT username, email FROM user WHERE username = :username');
+        $records_init->bindParam(':username', $data['owner']);
+        $records_init->execute();
+        $results_1 = $records_init->fetchAll();
+
+
+        if (count($results_1[0]) > 0) {
+            $user_target = $results_1[0]['username'];
+            $email = $results_1[0]['email'];
+
+            $headers = "From: test@mydomain.com";
+            $msg = "Hello " . $user_target . "\r\n" .
+                $username . " just commented your picture on " . $data['date']
+                . "\r\n" . "\r\n" .
+                "comment : " . "\r\n" .
+                "\" " . $data['comment'] . " \"" . "\r\n" . "\r\n" .
+                "Thank you," . "\r\n" .
+                "The Camagru Team";
+            mail($email, "Camagru : One of your picture has a new comment !", $msg, $headers);
+        }
         if ($sql)
             echo "success";
         else

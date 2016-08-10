@@ -4,8 +4,6 @@ if (!isset($username) || $login == false) {
 }
 ?>
 
-
-
 <div id="content">
     <h1 style="text-align:center; font-family: helvetica;">Take a picture and make your own montage!</h1>
 
@@ -14,7 +12,7 @@ if (!isset($username) || $login == false) {
         for ($i = 1; $i <= 6; $i++) {
             echo '<div class="wrap">
             <img src="faces/'.$i.'.png"/>
-            <input type="radio" name="mark" id="markStudent'.$i.'" value="Student" onclick="activateStartButton()"/>
+            <input type="radio" name="mark" id="markStudent'.$i.'" value="Student" onclick="activateStartButton('.$i.')"/>
             </div>';
         }
         ?>
@@ -27,6 +25,7 @@ if (!isset($username) || $login == false) {
     <br>
 
     <div class="camera">
+        <img id="prevIMG" class="preview-image" src=""/>
         <video id="video">Video stream not available.</video>
         <br>
         <button id="startbutton">Take a photo</button>
@@ -70,5 +69,7 @@ if (!isset($username) || $login == false) {
     echo '</div>';
     ?>
 </div>
+<?php echo '<script type="text/javascript" src="js/script.js"></script>'; ?>
+
 
 

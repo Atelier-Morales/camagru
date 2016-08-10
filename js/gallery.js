@@ -11,20 +11,23 @@ var btn = document.getElementById("myBtn");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
+function sendAjaxToOpenModal(id) {
+    var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+    xmlhttp.open("POST", "../camagru/ajax.php");
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify({modal_id: id}));
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var resp = JSON.parse(xmlhttp.responseText);
+            openModal(resp[0], resp[1], resp[2], resp[3], resp[4], resp[5], resp[6]);
+        }
+    };
+}
 
 if (window.location.href.split("#").length > 1) {
     var viewValue = window.location.href.split("#")[1];
     if (viewValue.split("=")[1].length > 0) {
-        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-        xmlhttp.open("POST", "../camagru/ajax.php");
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlhttp.send(JSON.stringify({modal_id: viewValue.split("=")[1]}));
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                var resp = JSON.parse(xmlhttp.responseText);
-                openModal(resp[0], resp[1], resp[2], resp[3], resp[4], resp[5], resp[6]);
-            }
-        };
+        sendAjaxToOpenModal(viewValue.split("=")[1]);
     }
 }
 
@@ -111,26 +114,25 @@ function like(user, id) {
     sendRequest(body, id);
 }
 
-function publishComment(user, id, owner, commentText, date) {
+function publishComment(user, id, owner, commentText, title, date) {
     var body = {};
     body.user = user;
     body.picture_id = id;
     body.comment = commentText;
     body.owner = owner;
+    body.title = title;
     body.date = date;
     sendRequest(body, id)
 }
 
 function openModal(user, title, date, owner, id, likes, comments) {
     window.location = window.location.href.split("#")[0] + "#view=" + id;
-    var modal = document.getElementById('myModal');
-    modal.style.display = "block";
-    var modalTitle = document.getElementById('modal-title');
-    modalTitle.innerHTML = title;
+
     var imageView = document.getElementById("imageView");
     imageView.src = document.getElementById(id).src;
     var likesList = document.getElementById('likes');
     var likeButton = document.getElementById('like-button');
+
     if (likes.length < 1) {
         likesList.innerHTML = "No likes";
         while (likeButton .hasChildNodes()) {
@@ -179,7 +181,7 @@ function openModal(user, title, date, owner, id, likes, comments) {
     var pub = document.createElement('button');
     pub.innerHTML = 'Publish';
     pub.onclick = function(event) {
-        publishComment(user, id, owner, document.getElementById('comment').value, getCurrentDate());
+        publishComment(user, id, owner, document.getElementById('comment').value, title, getCurrentDate());
     };
     publishButton.appendChild(pub);
     var commentSection = document.getElementById('comment-section');
@@ -199,6 +201,10 @@ function openModal(user, title, date, owner, id, likes, comments) {
         commentSection.appendChild(texto);
         commentSection.appendChild(content);
     }
+    var modal = document.getElementById('myModal');
+    modal.style.display = "block";
+    var modalTitle = document.getElementById('modal-title');
+    modalTitle.innerHTML = escapeHtml(title);
 }
 
 function closeModal() {

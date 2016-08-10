@@ -26,7 +26,9 @@ function changeView(value) {
 
 var faceChosen = false;
 
-function activateStartButton() {
+function activateStartButton(value) {
+    var prevImg = document.getElementById('prevIMG');
+    prevImg.src = 'faces/' + value + '.png';
     document.getElementById('startbutton').disabled = false;
     document.getElementById('submitFile').disabled = false;
     faceChosen = true;
@@ -188,8 +190,8 @@ function activateStartButton() {
         ajax.onreadystatechange = function() {
             ev.preventDefault();
             if (ajax.readyState == 4 && ajax.status == 200) {
-                console.log(ajax.responseText );
-                if (ajax.responseText !== "Please upload a picture")
+                console.log(ajax.responseText);
+                if (ajax.responseText === "temp/blend.png")
                     photo2.src = 'http://localhost:8080/camagru/' + ajax.responseText + '?' + new Date().getTime();
             }
         };

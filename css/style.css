@@ -132,6 +132,11 @@
     display: none;
 }
 
+.preview-image {
+    position: absolute;
+    margin-left: 110px;
+}
+
 div#leftCol {
     position: absolute;
     text-align: center;

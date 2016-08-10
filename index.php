@@ -140,7 +140,6 @@ if (!isset($login) || $login == false) {
             , 'window.alert("' . $message . '");'
             , '</script>';
         }
-        echo '<script type="text/javascript" src="js/script.js"></script>';
     }
     else if ($view == 2) {
 
@@ -162,10 +161,7 @@ if (!isset($login) || $login == false) {
         $records3 = $db->prepare($sql3, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $records3->execute();
         $comments = $records3->fetchAll();
-
-        echo '<script type="text/javascript" src="js/gallery.js"></script>';
         require("gallery.php");
-
     }
 }
 
