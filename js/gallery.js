@@ -120,7 +120,7 @@ function publishComment(user, id, owner, commentText, title, date) {
     body.picture_id = id;
     body.comment = commentText;
     body.owner = owner;
-    body.title = title;
+    body.pic_title = title;
     body.date = date;
     sendRequest(body, id)
 }

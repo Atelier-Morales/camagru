@@ -152,7 +152,7 @@ if (isset($data["comment"])) {
 
             $headers = "From: test@mydomain.com";
             $msg = "Hello " . $user_target . "\r\n" .
-                $username . " just commented your picture on " . $data['date']
+                $username . " just commented your picture " . $data['pic_title'] . " on " . $data['date']
                 . "\r\n" . "\r\n" .
                 "comment : " . "\r\n" .
                 "\" " . $data['comment'] . " \"" . "\r\n" . "\r\n" .

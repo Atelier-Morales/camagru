@@ -77,13 +77,8 @@ if (isset($_GET["token"])) {
         $sql->bindParam(':password', $token[2], PDO::PARAM_STR);
         $sql->bindParam(':email', $token[1], PDO::PARAM_STR);
         $sql->execute();
-        $_SESSION['username'] = $token[0];
-        $username = $token[0];
-        $login = true;
-        $welcome = true;
         header("Location: index.php");
     } catch (PDOException $e) {
-//        echo $e->getMessage();
         header("Location: index.php");
     }
 }
@@ -95,8 +90,6 @@ if (isset($_GET["logout"])) {
     unset($_SESSION['login']);
     header("Location: index.php");
 }
-
-//require("upload.php");
 
 if (isset($_GET["gallery"]) || isset($_GET["home"])) {
     $login = $_SESSION['login'];
