@@ -115,7 +115,8 @@ if (!isset($login) || $login == false) {
         echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
         require("login.php");
     }
-} else {
+} 
+else {
     if ($view == 1) {
         $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, pic.user_id 
                 FROM pictures pic 

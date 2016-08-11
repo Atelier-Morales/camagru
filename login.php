@@ -17,6 +17,7 @@
                 <label>Password :</label>
                 <input type="password" name="password" class="box" />
                 <br/>
+                <a href="index.php?resetpassword"></a>
                 <br />
                 <input type="submit" name='submit' value="Submit" class='submit' />
                 <br />
