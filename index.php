@@ -52,6 +52,14 @@ if (isset($_POST['submitReg'])) {
     if ($email == '')
         $errMsg .= 'You must enter your Email<br>';
 
+    $sql = 'SELECT username FROM user WHERE username = :username';
+    $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $records->execute(array(':username' => $username));
+    $results = $records->fetchAll();
+    if (count($results[0]) > 0){
+        $errMsg .= 'Username already taken, choose another one';
+    }
+
     if ($errMsg == '') {
         $pass = hash('gost', $password);
         $codedInfo = base64_encode($username . ' ' . $email . ' ' . $pass);

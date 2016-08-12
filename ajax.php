@@ -61,6 +61,16 @@ if (isset($data["title"])) {
     }
 }
 
+if  (isset($data['picture_src'])) {
+    //fetch pictures src
+
+    $sql = $db->prepare('SELECT src FROM pictures WHERE id = :id');
+    $sql->bindParam(':id', $data["picture_src"]);
+    $sql->execute();
+    $picture = $sql->fetchAll();
+    echo ('data:image/png;base64,' . base64_encode($picture[0]["src"]));
+}
+
 if (isset($data["test"])) {
     //fetch pictures first
     $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, us.username 
@@ -68,7 +78,7 @@ if (isset($data["test"])) {
     $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $records->execute();
     $pictures = $records->fetchAll();
-    $limit = count($pictures);
+    $limit = count($pictures) + 1;
 
     $i = $data['position'];
     function countLikes($index, $likes)

@@ -27,7 +27,7 @@
                 <input type="password" name="password" class="box" />
                 <br/>
                 <br />
-                <input type="submit" name='submitReg' value="SubmitReg" class='submit' />
+                <input type="submit" name='submitReg' value="Submit Registration" class='submit' />
                 <br />
             </form>
         </div>

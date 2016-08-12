@@ -91,7 +91,6 @@ var options = {
                 var body = {};
                 body.test = 'lol';
                 body.position = startIndex;
-                console.log(body.position);
                 var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
                 xmlhttp.open("POST", "../camagru/ajax.php");
                 xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -102,7 +101,6 @@ var options = {
                         if (startIndex >= response[1])
                             stopScroll = true;
                         else {
-                            console.log(response[1] + ' ' + startIndex);
                             wrapper.innerHTML += response[0];
                         }
                     }
@@ -236,7 +234,19 @@ function openModal(user, title, date, owner, id, likes, comments) {
     window.location = window.location.href.split("#")[0] + "#view=" + id;
 
     var imageView = document.getElementById("imageView");
-    imageView.src = document.getElementById(id).src;
+    if(document.getElementById(id) !== null)
+        imageView.src = document.getElementById(id).src;
+    else {
+        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+        xmlhttp.open("POST", "../camagru/ajax.php");
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify({ picture_src : id }));
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                imageView.src = xmlhttp.responseText;
+            }
+        };
+    }
     var likesList = document.getElementById('likes');
     var likeButton = document.getElementById('like-button');
 
