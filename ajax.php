@@ -6,7 +6,8 @@
  * Time: 00:45
  */
 
-function base64_to_jpeg($base64_string, $output_file) {
+function base64_to_jpeg($base64_string, $output_file)
+{
     $ifp = fopen($output_file, "wb");
 
     $data = explode(',', $base64_string);
@@ -24,7 +25,7 @@ if (isset($data["id_delete"])) {
     try {
         $sql = $db->prepare('DELETE FROM pictures WHERE id = :id AND user_id = :user_id');
         $sql->bindParam(':id', $data["id_delete"]);
-        $sql->bindParam(':user_id' , $data["user_id"]);
+        $sql->bindParam(':user_id', $data["user_id"]);
         $db->beginTransaction();
         $sql->execute();
         $db->commit();
@@ -32,9 +33,8 @@ if (isset($data["id_delete"])) {
             echo "success";
         else
             echo "fail";
-    }
-    catch(PDOException $ex) {
-        echo "An Error occured! : ".$ex->getMessage();
+    } catch (PDOException $ex) {
+        echo "An Error occured! : " . $ex->getMessage();
     }
 }
 
@@ -45,9 +45,9 @@ if (isset($data["title"])) {
     try {
         $sql = $db->prepare('INSERT INTO pictures (user_id, src, title, date) VALUES ((SELECT id FROM user WHERE username = :username), :src, :title, :date)');
         $sql->bindParam(':username', $username, PDO::PARAM_STR);
-        $sql->bindParam(':src' , $fp, PDO::PARAM_LOB);
-        $sql->bindParam(':title' , $data["title"]);
-        $sql->bindParam(':date' , $data["date"]);
+        $sql->bindParam(':src', $fp, PDO::PARAM_LOB);
+        $sql->bindParam(':title', $data["title"]);
+        $sql->bindParam(':date', $data["date"]);
         //$records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $db->beginTransaction();
         $sql->execute();
@@ -56,10 +56,53 @@ if (isset($data["title"])) {
             echo "success";
         else
             echo "fail";
+    } catch (PDOException $ex) {
+        echo "An Error occured! : " . $ex->getMessage();
     }
-    catch(PDOException $ex) {
-        echo "An Error occured! : ".$ex->getMessage();
+}
+
+if (isset($data["test"])) {
+    //fetch pictures first
+    $sql = 'SELECT pic.id, pic.src, pic.title, pic.date, us.username 
+                FROM pictures pic INNER JOIN user us ON pic.user_id = us.id';
+    $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $records->execute();
+    $pictures = $records->fetchAll();
+    $limit = count($pictures);
+
+    $i = $data['position'];
+    function countLikes($index, $likes)
+    {
+        $result = 0;
+        for ($j = 0; $j < count($likes); $j++) {
+            if ($likes[$j]["picture_id"] == $index)
+                $result++;
+        }
+        return $result;
     }
+
+    $node_to_add = '<div class="columns" id="column-card">
+            <div class="card">
+                <div class="image">
+                    <div class="image-wrapper overlay-fade-in">
+                        <img width="527px" id="' . $pictures[$i]["id"] . '" height="350" src="data:image/png;base64,' . base64_encode($pictures[$i]["src"]) . '">
+                        <span class="title" id="image-title' . $i . '">' . htmlspecialchars($pictures[$i]["title"], ENT_QUOTES, "UTF-8") . '</span>
+                        <div onmouseenter="mouseEnter(\'' . $i . '\')" onmouseleave="mouseLeave(\'' . $i . '\')" class="image-overlay-content" onclick="sendAjaxToOpenModal(
+                        \'' . $pictures[$i]["id"] . '\'
+                        )">
+                            <h2>' . htmlspecialchars($pictures[$i]["title"], ENT_QUOTES, "UTF-8") . '</h2>
+                            <p style="top: 0px !important" class="title">Posted by ' . htmlspecialchars($pictures[$i]["username"], ENT_QUOTES, "UTF-8") . ' on ' . $pictures[$i]["date"] . '</p>
+                            
+                            <p class="title">' . countLikes($pictures[$i]["id"], $likes) . ' likes / ' . countLikes($pictures[$i]["id"], $comments) . ' Comments</p><br>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        </div>';
+    $resp_infinite = array();
+    $resp_infinite[0] = $node_to_add;
+    $resp_infinite[1] = $limit;
+    echo json_encode($resp_infinite);
 }
 
 if (isset($data["url"])) {
@@ -95,7 +138,7 @@ if (isset($data["picture_to_like"])) {
     try {
         $sql = $db->prepare('INSERT INTO likes (username, picture_id) VALUES(:username, :picture_id)');
         $sql->bindParam(':username', $username, PDO::PARAM_STR);
-        $sql->bindParam(':picture_id' , $data["picture_to_like"]);
+        $sql->bindParam(':picture_id', $data["picture_to_like"]);
         $db->beginTransaction();
         $sql->execute();
         $db->commit();
@@ -103,9 +146,8 @@ if (isset($data["picture_to_like"])) {
             echo "success";
         else
             echo "fail";
-    }
-    catch(PDOException $ex) {
-        echo "An Error occured! : ".$ex->getMessage();
+    } catch (PDOException $ex) {
+        echo "An Error occured! : " . $ex->getMessage();
     }
 }
 
@@ -114,7 +156,7 @@ if (isset($data["picture_to_unlike"])) {
     try {
         $sql = $db->prepare('DELETE FROM likes WHERE picture_id = :picture_id AND username = :username');
         $sql->bindParam(':username', $username, PDO::PARAM_STR);
-        $sql->bindParam(':picture_id' , $data["picture_to_unlike"]);
+        $sql->bindParam(':picture_id', $data["picture_to_unlike"]);
         $db->beginTransaction();
         $sql->execute();
         $db->commit();
@@ -122,9 +164,8 @@ if (isset($data["picture_to_unlike"])) {
             echo "success";
         else
             echo "fail";
-    }
-    catch(PDOException $ex) {
-        echo "An Error occured! : ".$ex->getMessage();
+    } catch (PDOException $ex) {
+        echo "An Error occured! : " . $ex->getMessage();
     }
 }
 
@@ -133,9 +174,9 @@ if (isset($data["comment"])) {
     try {
         $sql = $db->prepare('INSERT INTO Comments (username, picture_id, comment, date_published) VALUES(:username, :picture_id, :comment, :date_published)');
         $sql->bindParam(':username', $username, PDO::PARAM_STR);
-        $sql->bindParam(':picture_id' , $data["picture_id"]);
-        $sql->bindParam(':comment' , $data["comment"]);
-        $sql->bindParam(':date_published' , $data["date"]);
+        $sql->bindParam(':picture_id', $data["picture_id"]);
+        $sql->bindParam(':comment', $data["comment"]);
+        $sql->bindParam(':date_published', $data["date"]);
         $db->beginTransaction();
         $sql->execute();
         $db->commit();
@@ -164,15 +205,15 @@ if (isset($data["comment"])) {
             echo "success";
         else
             echo "fail";
-    }
-    catch (PDOException $e) {
-        echo "An Error occured! : ".$e->getMessage();
+    } catch (PDOException $e) {
+        echo "An Error occured! : " . $e->getMessage();
     }
 }
 
 if (isset($data["modal_id"])) {
 
-    function fetchLikes($index, $likes) {
+    function fetchLikes($index, $likes)
+    {
         $picture_likes = array();
         for ($k = 0; $k < count($likes); $k++) {
             if ($likes[$k]["picture_id"] == $index)
@@ -181,7 +222,8 @@ if (isset($data["modal_id"])) {
         return $picture_likes;
     }
 
-    function fetchComments($index, $comments) {
+    function fetchComments($index, $comments)
+    {
         $picture_comments = array();
         for ($q = 0; $q < count($comments); $q++) {
             if ($comments[$q]["picture_id"] == $index) {
@@ -220,7 +262,7 @@ if (isset($data["modal_id"])) {
 
             $pic_comments = fetchComments($pictures[$index]["id"], $comments);
 
-            break ;
+            break;
         }
     }
     if ($found > -1) {
@@ -235,8 +277,7 @@ if (isset($data["modal_id"])) {
         $response[6] = $pic_comments;
         echo json_encode($response);
 
-    }
-    else
+    } else
         echo "fail";
 }
 ?>

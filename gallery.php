@@ -21,8 +21,8 @@
         return $result;
     }
 
-    for ($i = 0; $i <= (count($pictures) - 1); $i++) {
-        echo '<div class="columns">
+    for ($i = 0; $i <= (count($pictures) - 1) && $i <= 5; $i++) {
+        echo '<div class="columns" id="column-card">
             <div class="card">
                 <div class="image">
                     <div class="image-wrapper overlay-fade-in">
@@ -44,6 +44,8 @@
     ?>
 
 </div>
+
+
 
 <!-- The Modal -->
 <div id="myModal" class="modal">

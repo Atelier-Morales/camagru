@@ -9,8 +9,7 @@ try {
             `email` VARCHAR(140) NOT NULL,
             `password` CHAR(64) NOT NULL,
             PRIMARY KEY (`id`),
-            UNIQUE (`username`),
-            UNIQUE (`password`)
+            UNIQUE (`username`)
         )
         ENGINE = InnoDB");
     $user_table->execute();

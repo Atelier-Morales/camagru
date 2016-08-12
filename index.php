@@ -30,6 +30,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['username'] = $username;
             $_SESSION['login'] = $login;
             $_SESSION['email'] = $email;
+            $_SESSION['gallery_view'] = 5;
         } else {
             unset($username);
             $errMsg .= 'Username and Password not found<br>';
