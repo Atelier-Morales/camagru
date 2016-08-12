@@ -68,6 +68,59 @@ if (isset($_POST['submitReg'])) {
     }
 }
 
+if (isset($_POST['usernameCheck'])) {
+    $check_username = trim($_POST['username']);
+    if ($check_username == '')
+        $errMsg .= 'You must enter your username or email<br>';
+    else {
+        $sql = 'SELECT username, email FROM user WHERE username = :username OR email = :email';
+        $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $records->execute(array(':username' => $check_username, ':email' => $check_username));
+        $results = $records->fetchAll();
+        if (count($results[0]) > 0) {
+            $username_to_contact = $results[0]['username'];
+            $contact_email = $results[0]['email'];
+            $email_info = base64_encode($username_to_contact);
+            $headers = "From: test@mydomain.com";
+            $msg = "Hello " . $username_to_contact . "\r\n" .
+                "You can now reset your password via this link :"
+                . "\r\n" .
+                "http://localhost:8080/camagru/index.php?resetpass=" . $email_info
+                . "\r\n" . "\r\n" .
+                "Thank you," . "\r\n" .
+                "The Camagru Team";
+            mail($contact_email, "Camagru : Reset your password", $msg, $headers);
+            $confirm2 = true;
+        } else {
+            $errMsg .= 'User not found<br>';
+        }
+    }
+}
+
+if (isset($_POST['submitNewPass'])) {
+    if (strcmp($_POST['password'], $_POST['passwordConfirm']) != 0) {
+        $errMsgPass = 'passwords don\'t match please retype passwords';
+    }
+    else {
+        try {
+            $temp_user = $_POST['check-username'];
+            $newPass = hash('gost', $_POST['password']);
+            $sql = $db->prepare("UPDATE `user` 
+                                  SET `user`.`password` = :newpassword 
+                                  WHERE `user`.`username` = :temp_username");
+            $sql->bindParam(':newpassword', $newPass);
+            $sql->bindParam(':temp_username', $temp_user);
+            $sql->execute();
+            setcookie('resetsuccess', true, time() + 1, "/");
+            header("Location: index.php");
+        }
+        catch (PDOException $e) {
+            $errMsgPass = $e;
+        }
+    }
+
+}
+
 if (isset($_GET["token"])) {
     $decoded = base64_decode(htmlspecialchars($_GET["token"]));
     $token = explode(" ", $decoded);
@@ -80,6 +133,13 @@ if (isset($_GET["token"])) {
         header("Location: index.php");
     } catch (PDOException $e) {
         header("Location: index.php");
+    }
+}
+
+if (isset($_COOKIE['resetsuccess'])) {
+    if ($_COOKIE['resetsuccess'] == 1) {
+        $reset_success = 'password succesfully reset, please log in';
+        unset($_COOKIE['resetsuccess']);
     }
 }
 
@@ -111,7 +171,35 @@ if (!isset($login) || $login == false) {
             echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
             require("register.php");
         }
-    } else {
+    }
+    else if (isset($_GET["resetpass"])) {
+        if (strlen($_GET["resetpass"]) == 0) {
+            if (isset($confirm2) && $confirm2 == true)
+                echo '<h2 class="welcome">Please click on the link you have received by email</h2>';
+            else
+                require("reset.php");
+        }
+        else if (strlen($_GET["resetpass"]) > 0) {
+            $user_exists = base64_decode($_GET["resetpass"]);
+            try {
+                $sql = 'SELECT username, email FROM user WHERE username = :username';
+                $records = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                $records->execute(array(':username' => $user_exists));
+                $results = $records->fetchAll();
+                if (count($results[0]) > 0) {
+                    $temp_user = $results[0]['username'];
+                }
+                else {
+                    $errMsgReset .= 'User not found, please type a valid username<br>';
+                }
+            }
+            catch (PDOException $e) {
+                $errMsgReset .= 'User not found, please type a valid username<br>';
+            }
+            require("reset.php");
+        }
+    }
+    else {
         echo '<h2 class="welcome">Welcome to Camagru, please login or register</h2>';
         require("login.php");
     }
