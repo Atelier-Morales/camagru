@@ -5,6 +5,11 @@
  * Date: 03/06/2016
  * Time: 02:25
  */
+
+if (!isset($username) || $login == false) {
+    header("Location: index.php");
+}
+
 ?>
 
 <h1 style="text-align: center; font-family: helvetica;">Gallery</h1>

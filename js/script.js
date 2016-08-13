@@ -104,7 +104,6 @@ function activateStartButton(value) {
         photoTitle.addEventListener("input", function(e) {
             if (photoTitle.value.length > 0 && faceChosen && photo2.src != "http://localhost:8080/camagru/") {
                 savebutton.disabled = false;
-                console.log('test2 =' + photo2.src);
             }
             else
                 savebutton.disabled = true;
